@@ -1,0 +1,10 @@
+Nome	Definicao	Dica
+Espanha	Pais na Europa localizado na peninsula Ibérica	Tem como lingua oficial o espanhol
+Tim-Burton	Cineasta e animador reconhecido pelas tematicas goticas em suas obras	Dirigiu em 1991 o filme Edward Mão de Tesoura
+Monty-Python	Renoameado grupo britanico responsaveis por revolucionar o modo de fazer comedia	Uma famosa linguagem de programação foi nomeada em homenagem a eles
+Franz-Liszt	Compositor e painista Húngaro do século 19	Famoso por causar instensos frenesis em fãs durante suas apresentações
+Cuba	Pais localizado no mar do caribe, famoso por sua revolução executada por um grupo de guerrilheiros com apoio popular	Codigo de Internet é .cu
+Vampiro	Criatura literaria explorada por Bram Stocker em seus romances	Conhecida por dormir em caixões e beber sangue
+João-Gilberto	Famoso cantor e compositor brasileiro conhecido como pai da Bossa Nova	Conhecido como joãozinho é o artista criador do album chega de saudade
+Quarentena	Nome dado a um espço de tempo destinado a reclusão	Utilizada para evitar a transmição de virus ou bacterias possiveis causadores de doenças
+
