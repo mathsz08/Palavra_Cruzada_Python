@@ -48,7 +48,7 @@ class palavra:
         self.definicao = definicao
         self.dica = dica
         for j in nome:
-            aux = [j, False]
+            aux = [j,self, False]
             self.letras.append(aux)
 
     def getNome(self):
@@ -68,11 +68,6 @@ class palavra:
 
     def getLetra(self, pos):
         return self.letras[pos]
-
-    def getConex(self):
-        return self.conex
-
-
 
     #def defPos(self, i, pos):
      #   self.getLetra(i).append(pos)
@@ -104,7 +99,7 @@ class palavra:
     def conectar(self, index,val):
         self.conex.append(val)
         self.getLetra(index).append(val)
-        self.getLetra(index)[1] = True
+        self.getLetra(index)[2] = True
 
 
     def getPalavraInfo(self):

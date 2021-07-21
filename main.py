@@ -7,7 +7,6 @@ while True:
     print(f"Quer Jogar Cruadinha?")
     r = input()
     if r.lower() in resP:
-        print("\n" * 130)
         obj_jogo.start()
     else:
         break

@@ -1,7 +1,6 @@
 from Palavras import palavra as pl
 from Palavras import dicionario as dc
 from Tabuleiro import tabuleiro as tab
-from Jogo import jogada
 import pandas as pd
 from random import randint
 
@@ -15,8 +14,9 @@ class Jogo:
 
 def start():
     tabu = getVariables()
-    tabu.getTabJog()
-
+    while not tabu.ganhou():
+        tabu.getTabJog()
+        tabu.selectPalavra(int(input('Escolha uma palavra: ')))
 
 
 

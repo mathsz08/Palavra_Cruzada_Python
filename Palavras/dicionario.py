@@ -5,7 +5,8 @@ def check(l1, l2):
     :param l2: Char
     :return: Boolean
     """
-    if l1[0] != "-" and (l1[0].upper() == l2[0].upper()) and (not l1[1] and not l2[1]) and (l1[1] is not None and l2[1] is not None):
+    if l1[1] != "-" and (l1[1].upper() == l2[1].upper()) and (not l1[2] and not l2[2]) and (
+            l1[2] is not None and l2[2] is not None):
         """
             Condições: 
                 Não pode ser o caractere '-' :                   (l1[0] != '-')
@@ -66,12 +67,13 @@ class dicionario:
         """
         return self.pals
 
-
     def criarArvore(self):
         """
         Organiza as palavras em uma estrutura de Arvore
         :return: None
         """
+        for palavra in self.pals:
+            self.letraForm(palavra)
 
         palavras = self.pegarPalavras(self.Bpal)
         self.Bpal.setAnt(palavras[0])
@@ -79,6 +81,7 @@ class dicionario:
         self.Bpal.setRaiz("Raiz")
         palavras[1].setRaiz(self.Bpal)
         palavras[0].setRaiz(self.Bpal)
+
 
         for palavra in self.pals:
             if palavra == self.Bpal:
@@ -104,17 +107,17 @@ class dicionario:
         if pal2 == self.Bpal:  # Se a segunda palavras nao for passada, logo primeira palavra da cruzadinha
             for palavra in self.getPals():
                 if len(aux) < 2 and pal2 != palavra:
-                    if self.seConnect(pal2, palavra):   # se não tiver 2 palavras selecionadas
+                    if self.seConnect(pal2, palavra):  # se não tiver 2 palavras selecionadas
                         aux.append(palavra)
         else:
             for palavra in self.getPals():
-                if self.pegarPalavraCond(pal2,palavra):  # A palavra não pode ser a palavra na qual ela esta ligada
+                if self.pegarPalavraCond(pal2, palavra):  # A palavra não pode ser a palavra na qual ela esta ligada
                     if len(aux) < 2:
                         if self.seConnect(pal2, palavra):  # se elas se conectarem
                             aux.append(palavra)
-        return aux # Retorna Lista com as palavras conectadas
+        return aux  # Retorna Lista com as palavras conectadas
 
-    def pegarPalavraCond(self,palavra1,palavra2):
+    def pegarPalavraCond(self, palavra1, palavra2):
         """
         Verifica as condições de disponibilidade das duas palavras passadas como parametro
         :param palavra1: Palavra
@@ -134,12 +137,18 @@ class dicionario:
         :param pal2: Palavra
         :return : Boolean
         """
-        for index2, l2 in enumerate(pal2.getLetras()):# Para cada letra na primeira palavra
-            for index1, l1 in enumerate(pal1.getLetras()):# Para cada letra na segunda palavra
-                if check(l1, l2): # chama função para verificar condições de ligação
-                   if pal1.getLetra(index1) != pal1.getLetra(pal1.getTam()-1):
-                        if (pal1.getLetra(index1- 1)[1] is False and not None) and (pal1.getLetra(index1+ 1)[1] is False and not None):
-                            pal1.conectar(index1, pal2) # Conecta a letra da palavra 1 com a letra da palavra 2
-                            pal2.getLetra(index2)[1] = None
+        for index2, l2 in enumerate(pal2.getLetras()):  # Para cada letra na primeira palavra
+            for index1, l1 in enumerate(pal1.getLetras()):  # Para cada letra na segunda palavra
+                if check(l1, l2):  # chama função para verificar condições de ligação
+                    if pal1.getLetra(index1) != pal1.getLetra(pal1.getTam() - 1):
+                        if (pal1.getLetra(index1 - 1)[2] is False and not None) and (
+                                pal1.getLetra(index1 + 1)[2] is False and not None):
+                            pal1.conectar(index1, pal2)  # Conecta a letra da palavra 1 com a letra da palavra 2
+                            pal2.getLetra(index2)[2] = None
                             return True
         return False
+
+    def letraForm(self,palavra):
+        for i in palavra.getLetras():
+            i.insert(0,palavra)
+

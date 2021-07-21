@@ -13,8 +13,8 @@ class tabuleiro:
         self.tabuleiro = list() # tabuleiro gabarito
         self.tabuleiroJog = list()# tabuleiro para o usuario
         self.dicionario = dicionario # lista de palavras interligadas para o tabuleiro
-        self.palnum =1
-        self.posPals = dict()
+        self.posPals = dict(zip(range(dicionario.num_pals),self.dicionario.pals))
+        self.palnum  = 1
 
     def tabuleiro(self,dicionario):
         """
@@ -25,6 +25,7 @@ class tabuleiro:
         self.tabuleiro = list() # tabuleiro gabarito
         self.tabuleiroJog = list() # tabuleiro para o usuario
         self.dicionario = dicionario # lista de palavras interligadas para o tabuleiro
+        self.palnum = 1
 
     def getDicionario(self):
         """
@@ -41,26 +42,36 @@ class tabuleiro:
         for i in self.tabuleiro:
             for j in i:
                 if j != 0:
-                    print(f"|{j[0]}|", end=" ")
+                    print(f"|{j[1]}|", end=" ")
                 else:
                     print("   ", end=" ")
             print(" ")
 
-    def getTabJog(self):
+    def getTabJog(self,select = None):
         """
             Retorna o tabuleiro do jogador
         :return: None
         """
-        for i in self.tabuleiroJog:
-            for j in i:
-                if j != 0:
-                    if type(j) is int:
-                        print(f' {j} ',end=' ')
+        for l,i in enumerate(self.tabuleiroJog):
+            for c, j in enumerate(i):
+                if j != 0 or j == " ":
+                    if select is None:
+                        if type(j) is int:
+                            print(f' {j} ',end=' ')
+                        else:
+                            print(f"|{j[1]}|", end=" ")
                     else:
-                        print(f"|{j[0]}|", end=" ")
+                        if type(j) is int:
+                            print(f' {j} ', end=' ')
+                        else:
+                            if select == j[0]:
+                                print(f"\033[31m|{j[1]}|\033[m", end=" ")
+                            else:
+                                print(f"|{j[1]}|", end=" ")
                 else:
                     print("   ", end=" ")
             print(" ")
+
 
 
     def criarTab(self):
@@ -98,21 +109,23 @@ class tabuleiro:
 
         cn = 0 # Inicia uma variavel para receber o index da letra conectada
         for index,l in enumerate(palavra.getLetras()): # Intera entre as letras da palavra passada por parametro
-            if l[0].upper() == posant[0].upper(): # Caso a letra seja igual a letra conectada
+            if l[1].upper() == posant[0].upper(): # Caso a letra seja igual a letra conectada
                 cn = index # guarda o index da letra igual
                 break # encerra o loop
         for index, letra in enumerate(palavra.getLetras()): # para cada letra da palavra
             if index == 0:
-                self.posPals.update({self.palnum:((posant[2],index+posant[1]),0)})
-                self.tabuleiroJog[posant[2]][(index+posant[1])-cn-1] = self.palnum
+            #     self.posPals.update({self.palnum:(posant[2],index+posant[1])})
+                for i in self.posPals.keys():
+                    if self.posPals.get(i) == palavra:
+                        self.tabuleiroJog[posant[2]][(index+posant[1])-cn-1] = i +1
             self.tabuleiro[posant[2]][(index+posant[1])-cn] = letra # posiciona a letra no tabuleiro gabarito
             if randint(0,10) % 2 == 0: # pequeno filtro para escolher quais letras não colocar
                 self.tabuleiroJog[posant[2]][(index + posant[1]) - cn] = letra # posiciona a letra no tabuleiro do Jogador
             else:
-                self.tabuleiroJog[posant[2]][(index + posant[1]) - cn] = ' '  # posiciona espaço vazio no tabuleiro do Jogador
-            if letra[1]: #caso a letra esteja interligada em alguma palavra
+                self.tabuleiroJog[posant[2]][(index + posant[1]) - cn] = (palavra,' ',letra[2])  # posiciona espaço vazio no tabuleiro do Jogador
+            if letra[2]: #caso a letra esteja interligada em alguma palavra
                 self.palnum += 1
-                self.colocarVertical(letra[2],index,(letra[0],pos,(index+posant[1])-cn)) # chama a função para a palavra interligada
+                self.colocarVertical(letra[3],index,(letra[1],pos,(index+posant[1])-cn)) # chama a função para a palavra interligada
 
     def colocarVertical(self,palavra,pos,posant = None):
         """
@@ -126,32 +139,89 @@ class tabuleiro:
         cn =0 # Inicia uma variavel para receber o index da letra conectada
         if posant is not None: # Se não for a primeira palavra conectada
             for index, l in enumerate(palavra.getLetras()): # Intera entre as letras da palavra passada por parametro
-                if l[0].upper() == posant[0].upper():# Caso a letra seja igual a letra conectada
+                if l[1].upper() == posant[0].upper():# Caso a letra seja igual a letra conectada
                     cn= index # guarda o index da letra igual
                     break# encerra o loop
             for index, letra in enumerate(palavra.getLetras()):# para cada letra da palavra
                 if index == 0:
-                    self.tabuleiroJog[(index + 4 + posant[1])-cn][posant[2]] = self.palnum
-                    self.posPals.update({self.palnum:(((index + 5 + posant[1])-cn,posant[2]),1)})
+                    for i in self.posPals.keys():
+                        if self.posPals.get(i) == palavra:
+                            self.tabuleiroJog[(index + 4 + posant[1])-cn][posant[2]] = i +1
+                #     self.posPals.update({self.palnum:((index + 5 + posant[1])-cn,posant[2])})
                 self.tabuleiro[(index + 5 + posant[1])-cn][posant[2]] = letra # posiciona a letra no tabuleiro gabarito
                 if randint(0, 10) % 2 == 0:# pequeno filtro para escolher quais letras não colocar
                     self.tabuleiroJog[(index + 5 + posant[1]) - cn][posant[2]] = letra  # posiciona a letra no tabuleiro do Jogador
                 else:
-                    self.tabuleiroJog[(index + 5 + posant[1]) - cn][posant[2]] = ' '  # posiciona espaço vazio no tabuleiro do Jogador
-                if letra[1]:#caso a letra esteja interligada em alguma palavra
+                    self.tabuleiroJog[(index + 5 + posant[1]) - cn][posant[2]] = (palavra,' ',letra[2])  # posiciona espaço vazio no tabuleiro do Jogador
+                if letra[2]:#caso a letra esteja interligada em alguma palavra
                     self.palnum =+ 1
-                    self.colocarHorizontal(letra[2],index,(letra[0],pos,(index + 5 + posant[1])-cn))# chama a função para a palavra interligada
+                    self.colocarHorizontal(letra[3],index,(letra[1],pos,(index + 5 + posant[1])-cn))# chama a função para a palavra interligada
         else: # se for a primeira palavra
             for index, letra in enumerate(palavra.getLetras()):# para cada letra da palavra
                 if index == 0:
-                    self.posPals.update({self.palnum: ((index+5,pos), 1)})
-                    self.tabuleiroJog[index + 4][pos] = self.palnum
+                #     self.posPals.update({self.palnum: (index+5,pos)})
+                    for i in self.posPals.keys():
+                        if self.posPals.get(i) == palavra:
+                            self.tabuleiroJog[index + 4][pos] = i +1
                 self.tabuleiro[index+5][pos] = letra # posiciona a letra no tabuleiro gabarito
-                if randint(0, 10)  % 2 == 0:# pequeno filtro para escolher quais letras não colocar
+                if randint(0, 10) % 2 == 0 or letra == '-':# pequeno filtro para escolher quais letras não colocar
                     self.tabuleiroJog[index + 5][pos] = letra  # posiciona espaço vazio no tabuleiro do Jogador
                 else:
-                    self.tabuleiroJog[index + 5][pos] = ' '  # posiciona a letra no tabuleiro do Jogador
-                if letra[1]:#caso a letra esteja interligada em alguma palavra
+                    self.tabuleiroJog[index + 5][pos] = (palavra,' ',letra[2]) # posiciona a letra no tabuleiro do Jogador
+                if letra[2]:#caso a letra esteja interligada em alguma palavra
                     self.palnum += 1
-                    self.colocarHorizontal(letra[2], index, (letra[0], pos,index+5))# chama a função para a palavra interligada
+                    self.colocarHorizontal(letra[3], index, (letra[1], pos,index+5))# chama a função para a palavra interligada
 
+    def ganhou(self):
+        for i in range(30):
+            for j in range(30):
+                if self.tabuleiroJog[i][j] != self.tabuleiro[i][j]:
+                    return False
+        return True
+
+
+    def selectPalavra(self,num):
+        try:
+            if (num-1)%2 == 0:
+                self.getTabJog(self.posPals[num-1])
+                self.selectPosLetra(self.posPals[num-1])
+            else:
+                self.getTabJog(self.posPals[num-1])
+                self.selectPosLetra(self.posPals[num - 1])
+        except KeyError:
+            print('Escreva um valor valido')
+
+    def selectPosLetra(self,pal):
+        ind = 0
+        aux =[]
+        for l, i in enumerate(self.tabuleiro):
+            for c, j in enumerate(i):
+                if j != 0:
+                    if i[c][0] == 0 or i[c][0] == 0:
+                        if self.tabuleiroJog[l][c] == self.tabuleiro[l][c]:
+                            aux.append((self.tabuleiroJog[l][c],(l,c)))
+                            print(f"|{j[1]}|", end=' ')
+                        else:
+                            aux.append((self.tabuleiroJog[l][c],(l,c)))
+                            print(f"|{ind}|", end=" ")
+                    elif j[0] == pal or (i[c][0] == pal and i[c][0] == pal):
+                        ind += 1
+                        if self.tabuleiroJog[l][c] == self.tabuleiro[l][c]:
+                            aux.append((self.tabuleiroJog[l][c],(l,c)))
+                            print(f"|{j[1]}|", end='-')
+                        else:
+                            aux.append((self.tabuleiroJog[l][c],(l,c)))
+                            print(f"|{ind}|",end="-")
+        print(" ")
+        aux2 = self.letraInteraction(aux,input("Escolha a posição da letra: "))
+        self.tabuleiroJog[aux2[1][0]][aux2[1][1]] = (pal,aux2[0])
+
+    def letraInteraction(self,pal,ind):
+        for j,i in enumerate(pal):
+            if j == int(ind)-1:
+                p= i[1]
+                print(f"\033[34m|{i[0][1]}|\033[m", end=' ')
+            else:
+                print(f"|{i[0][1]}|", end=' ')
+        print(" ")
+        return input('digite a letra: '), p
