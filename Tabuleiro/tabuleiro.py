@@ -117,7 +117,7 @@ class tabuleiro:
             #     self.posPals.update({self.palnum:(posant[2],index+posant[1])})
                 for i in self.posPals.keys():
                     if self.posPals.get(i) == palavra:
-                        self.tabuleiroJog[posant[2]][(index+posant[1])-cn-1] = i +1
+                        self.tabuleiroJog[posant[2]][(index+posant[1])-cn-1] = self.tabuleiro[posant[2]][(index+posant[1])-cn-1] = i +1
             self.tabuleiro[posant[2]][(index+posant[1])-cn] = letra # posiciona a letra no tabuleiro gabarito
             if randint(0,10) % 2 == 0: # pequeno filtro para escolher quais letras não colocar
                 self.tabuleiroJog[posant[2]][(index + posant[1]) - cn] = letra # posiciona a letra no tabuleiro do Jogador
@@ -146,7 +146,7 @@ class tabuleiro:
                 if index == 0:
                     for i in self.posPals.keys():
                         if self.posPals.get(i) == palavra:
-                            self.tabuleiroJog[(index + 4 + posant[1])-cn][posant[2]] = i +1
+                            self.tabuleiroJog[(index + 4 + posant[1])-cn][posant[2]] = self.tabuleiro[(index + 4 + posant[1])-cn][posant[2]] = i +1
                 #     self.posPals.update({self.palnum:((index + 5 + posant[1])-cn,posant[2])})
                 self.tabuleiro[(index + 5 + posant[1])-cn][posant[2]] = letra # posiciona a letra no tabuleiro gabarito
                 if randint(0, 10) % 2 == 0:# pequeno filtro para escolher quais letras não colocar
@@ -162,7 +162,7 @@ class tabuleiro:
                 #     self.posPals.update({self.palnum: (index+5,pos)})
                     for i in self.posPals.keys():
                         if self.posPals.get(i) == palavra:
-                            self.tabuleiroJog[index + 4][pos] = i +1
+                            self.tabuleiroJog[index + 4][pos] = self.tabuleiro[index + 4][pos] = i + 1
                 self.tabuleiro[index+5][pos] = letra # posiciona a letra no tabuleiro gabarito
                 if randint(0, 10) % 2 == 0 or letra == '-':# pequeno filtro para escolher quais letras não colocar
                     self.tabuleiroJog[index + 5][pos] = letra  # posiciona espaço vazio no tabuleiro do Jogador
@@ -175,8 +175,9 @@ class tabuleiro:
     def ganhou(self):
         for i in range(30):
             for j in range(30):
-                if self.tabuleiroJog[i][j] != self.tabuleiro[i][j]:
-                    return False
+                if type(self.tabuleiro[i][j]) is not int:
+                    if self.tabuleiroJog[i][j][1].upper() != self.tabuleiro[i][j][1].upper():
+                        return False
         return True
 
 
@@ -184,20 +185,20 @@ class tabuleiro:
         try:
             if (num-1)%2 == 0:
                 self.getTabJog(self.posPals[num-1])
-                self.selectPosLetra(self.posPals[num-1])
+                self.selectPosLetra(self.posPals[num-1],num)
             else:
                 self.getTabJog(self.posPals[num-1])
-                self.selectPosLetra(self.posPals[num - 1])
+                self.selectPosLetra(self.posPals[num - 1],num)
         except KeyError:
             print('Escreva um valor valido')
 
-    def selectPosLetra(self,pal):
+    def selectPosLetra(self,pal,num):
         ind = 0
         aux =[]
         for l, i in enumerate(self.tabuleiro):
             for c, j in enumerate(i):
-                if j != 0:
-                    if i[c][0] == 0 or i[c][0] == 0:
+                if type(i[c]) is not int:
+                    if i[c][0] == 0:
                         if self.tabuleiroJog[l][c] == self.tabuleiro[l][c]:
                             aux.append((self.tabuleiroJog[l][c],(l,c)))
                             print(f"|{j[1]}|", end=' ')
