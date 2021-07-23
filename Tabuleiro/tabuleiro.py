@@ -185,9 +185,17 @@ class tabuleiro:
         try:
             if (num-1)%2 == 0:
                 self.getTabJog(self.posPals[num-1])
+                if input('Quer ver a dica ?').lower() == 's':
+                    print('-'*75)
+                    print("dica: " + self.pegarDica(num))
+                    print('-' * 75)
                 self.selectPosLetra(self.posPals[num-1],num)
             else:
                 self.getTabJog(self.posPals[num-1])
+                if input('Quer ver a dica ?').lower() == 's':
+                    print('-'*75)
+                    print("dica: " + self.pegarDica(num))
+                    print('-' * 75)
                 self.selectPosLetra(self.posPals[num - 1],num)
         except KeyError:
             print('Escreva um valor valido')
@@ -226,3 +234,7 @@ class tabuleiro:
                 print(f"|{i[0][1]}|", end=' ')
         print(" ")
         return input('digite a letra: '), p
+
+    def pegarDica(self,num):
+        palavra = self.posPals[num-1]
+        return palavra.getDica()

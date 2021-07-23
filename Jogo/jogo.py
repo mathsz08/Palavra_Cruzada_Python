@@ -17,6 +17,10 @@ def start():
     while not tabu.ganhou():
         tabu.getTabJog()
         tabu.selectPalavra(int(input('Escolha uma palavra: ')))
+    print('Fim de Jogo, parabéns você concluiu corretqamente a cruzadinha!!')
+    for i in tabu.getDicionario().getPals():
+        print(f"Palavra: {i.getNome()}, Informações: {i.getDefinicao()}")
+
 
 
 
